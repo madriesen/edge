@@ -9,7 +9,7 @@ func startHttpServer() *http.Server {
 	srv := &http.Server{Addr: ":8080"}
 
 	// routes
-	http.HandleFunc("/auth/login", DoLogin)
+	http.HandleFunc("/auth/login", doLogin)
 
 	go func() {
 		err := srv.ListenAndServe()
