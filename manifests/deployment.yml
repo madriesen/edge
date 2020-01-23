@@ -13,4 +13,4 @@ spec:
         - name: edge 
           image: acubedcr.azurecr.io/edge
           ports:
-          - containerPort: 80
+          - containerPort: 8080
