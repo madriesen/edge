@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"log"
 	"net/http"
 )
@@ -10,9 +9,7 @@ func startHttpServer() *http.Server {
 	srv := &http.Server{Addr: ":8080"}
 
 	// routes
-	http.HandleFunc("/hello", func (w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "hellom world!")
-	})
+	http.HandleFunc("/auth/login", doLogin)
 
 	go func() {
 		err := srv.ListenAndServe()
