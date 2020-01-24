@@ -11,7 +11,7 @@ import (
 )
 
 // TODO: don't hardcode, use service discovery
-const authIp = "51.136.77.127:50551"
+const authIp = "51.105.98.1:50551"
 
 func doLogin(w http.ResponseWriter, r *http.Request) {
 	var req struct {
