@@ -4,6 +4,7 @@ metadata:
   name: edge
   namespace: acubed
 spec:
+  clusterIP: 10.0.165.176
   ports:
   - port: 8080
     protocol: TCP
