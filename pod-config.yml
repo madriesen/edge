@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: edge
+  namespace: acubed
+spec:
+  clusterIP: 10.0.165.178
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
