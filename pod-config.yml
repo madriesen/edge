@@ -25,6 +25,7 @@ spec:
       containers:
         - name: edgems 
           image: acubedcr.azurecr.io/edgems:buddy
+          imagePullPolicy: Always
           ports:
           - containerPort: 8080
       imagePullSecrets: 
