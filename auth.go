@@ -10,8 +10,7 @@ import (
 	pb "github.com/acubed-tm/edge/protofiles"
 )
 
-// TODO: don't hardcode, use service discovery
-const authIp = "51.105.98.1:50551"
+const authIp = "authenticationms.acubed:50551"
 
 func doLogin(w http.ResponseWriter, r *http.Request) {
 	var req struct {
