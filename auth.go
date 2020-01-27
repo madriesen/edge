@@ -26,7 +26,7 @@ func doLogin(w http.ResponseWriter, r *http.Request) {
 
 	success, err := runGrpc(authIp, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := pb.NewLoginServiceClient(conn)
+		c := pb.NewAuthServiceClient(conn)
 		resp, err := c.Login(ctx, &pb.LoginRequest{Email: req.Email, Password: req.Password})
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
@@ -44,7 +44,7 @@ func doLogin(w http.ResponseWriter, r *http.Request) {
 
 func doIsEmailRegistered(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		Email    string `json:"email"`
+		Email string `json:"email"`
 	}
 
 	err := getJsonFromPostRequest(r, &req)
@@ -55,7 +55,7 @@ func doIsEmailRegistered(w http.ResponseWriter, r *http.Request) {
 
 	success, err := runGrpc(authIp, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := pb.NewLoginServiceClient(conn)
+		c := pb.NewAuthServiceClient(conn)
 		resp, err := c.IsEmailRegistered(ctx, &pb.IsEmailRegisteredRequest{Email: req.Email})
 		if err != nil {
 			return nil, errors.New(err.Error())
