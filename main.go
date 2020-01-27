@@ -10,6 +10,7 @@ func startHttpServer() *http.Server {
 
 	// routes
 	http.HandleFunc("/auth/login", doLogin)
+	http.HandleFunc("/auth/is_registered", doIsEmailRegistered)
 
 	go func() {
 		err := srv.ListenAndServe()
