@@ -41,3 +41,32 @@ func doLogin(w http.ResponseWriter, r *http.Request) {
 
 	writeSuccessJson(w, success)
 }
+
+func doIsEmailRegistered(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Email    string `json:"email"`
+	}
+
+	err := getJsonFromPostRequest(r, &req)
+	if err != nil {
+		writeErrorJson(w, err)
+		return
+	}
+
+	success, err := runGrpc(authIp, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
+		// Contact the server and print out its response.
+		c := pb.NewLoginServiceClient(conn)
+		resp, err := c.IsEmailRegistered(ctx, &pb.IsEmailRegisteredRequest{Email: req.Email})
+		if err != nil {
+			return nil, errors.New(err.Error())
+		}
+		return resp.IsRegistered, nil
+	})
+
+	if err != nil {
+		writeErrorJson(w, err)
+		return
+	}
+
+	writeSuccessJson(w, success)
+}
