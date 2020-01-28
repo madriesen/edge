@@ -9,6 +9,7 @@ func startHttpServer() *http.Server {
 	srv := &http.Server{Addr: ":8080"}
 
 	// routes
+	http.HandleFunc("/auth/register", doRegister)
 	http.HandleFunc("/auth/login", doLogin)
 	http.HandleFunc("/auth/is_registered", doIsEmailRegistered)
 
