@@ -17,14 +17,12 @@ func handler(w http.ResponseWriter, r *http.Request, action string) {
 		return
 	}
 
-	// check what function is need to be called
+	// check what function is need to be called and run
 	success, err = runGrpcHelper(action, success, err, req)
 
 	if helpers.HasError(err, w) {
 		return
 	}
-
-	// create token and return
 
 	helpers.WriteSuccessJson(w, success)
 }
