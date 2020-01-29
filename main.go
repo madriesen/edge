@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/acubed-tm/edge/api/auth"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -41,6 +43,7 @@ func Routes() *chi.Mux {
 }
 
 func main() {
+	_ = godotenv.Load()
 	router := Routes()
 
 	walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
@@ -51,5 +54,10 @@ func main() {
 		log.Panicf("Logging err: %s\n", err.Error())
 	}
 
-	log.Fatal(http.ListenAndServe(":8081", router))
+	var port = "80"
+	if p := os.Getenv("PORT"); p != "" {
+		port = p
+	}
+
+	log.Fatal(http.ListenAndServe(":" + port, router))
 }
