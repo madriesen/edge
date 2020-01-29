@@ -8,11 +8,13 @@ import (
 	"google.golang.org/grpc"
 )
 
-func GrpcRegister(req struct {
+type AuthRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Token    string `json:"token"`
-}) func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
+}
+
+func GrpcRegister(req AuthRequest) func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 	return func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
 		c := pb.NewAuthServiceClient(conn)
@@ -24,10 +26,8 @@ func GrpcRegister(req struct {
 	}
 }
 
-func GrpcLogin(req struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}) func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
+
+func GrpcLogin(req AuthRequest) func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 	return func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
 		c := pb.NewAuthServiceClient(conn)
@@ -39,7 +39,8 @@ func GrpcLogin(req struct {
 	}
 }
 
-func GrpcCheckEmailRegistered(req struct{ Email string `json:"email"` }) func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
+
+func GrpcCheckEmailRegistered(req AuthRequest) func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 	return func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
 		c := pb.NewAuthServiceClient(conn)
