@@ -5,18 +5,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
+	"github.com/go-chi/render"
 
 	"google.golang.org/grpc"
 )
 
 func GetJsonFromPostRequest(r *http.Request, v interface{}) error {
 	if r.Method != "POST" {
-		return errors.New(fmt.Sprintf("expected POST request, received %s", r.Method))
+		return errors.New(fmt.Sprintf("expected a POST request, received %s", r.Method))
 	}
 
 	bodyBytes, _ := ioutil.ReadAll(r.Body)
@@ -28,24 +28,22 @@ func GetJsonFromPostRequest(r *http.Request, v interface{}) error {
 	return nil
 }
 
-func WriteSuccessJson(w http.ResponseWriter, v interface{}) {
+func WriteSuccessJson(w http.ResponseWriter, r *http.Request, v interface{}) {
 	log.Printf("Returning success: %v", v)
 	var resp struct {
 		Value interface{} `json:"value"`
 	}
 	resp.Value = v
-	jsonBytes, _ := json.Marshal(&resp)
-	_, _ = io.WriteString(w, string(jsonBytes))
+	render.JSON(w, r, resp)
 }
 
-func WriteErrorJson(w http.ResponseWriter, e error) {
+func WriteErrorJson(w http.ResponseWriter, r *http.Request, e error) {
 	log.Printf("Returning error: %v", e.Error())
 	var resp struct {
 		Message string `json:"error"`
 	}
 	resp.Message = e.Error()
-	jsonBytes, _ := json.Marshal(&resp)
-	_, _ = io.WriteString(w, string(jsonBytes))
+	render.JSON(w, r, resp)
 }
 
 func RunGrpc(ip string, f func(context.Context, *grpc.ClientConn) (interface{}, error)) (interface{}, error) {
