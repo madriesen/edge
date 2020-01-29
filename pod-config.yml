@@ -6,7 +6,7 @@ metadata:
 spec:
     type: LoadBalancer
     ports:
-    - port: 8080 
+    - port: 80 
     selector:
         app: edgems
 ---
@@ -27,6 +27,6 @@ spec:
           image: acubedcr.azurecr.io/edgems:buddy
           imagePullPolicy: Always
           ports:
-          - containerPort: 8080
+          - containerPort: 80
       imagePullSecrets: 
           - name: 'acubedcr8786ba3e-auth'
