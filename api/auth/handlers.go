@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/acubed-tm/edge/protofiles"
 	"github.com/acubed-tm/edge/helpers"
+	"github.com/acubed-tm/edge/protofiles"
 	"google.golang.org/grpc"
 	"net/http"
 )
@@ -22,14 +22,14 @@ func register(w http.ResponseWriter, r *http.Request) {
 	
 	err := helpers.GetJsonFromPostRequest(r, &req)
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := protofiles.NewAuthServiceClient(conn)
-		resp, err := c.Register(ctx, &protofiles.RegisterRequest{Email: req.Email, Password: req.Password, VerificationToken: req.Token})
+		c := proto.NewAuthServiceClient(conn)
+		resp, err := c.Register(ctx, &proto.RegisterRequest{Email: req.Email, Password: req.Password, VerificationToken: req.Token})
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
 		}
@@ -58,8 +58,8 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := protofiles.NewAuthServiceClient(conn)
-		resp, err := c.Login(ctx, &protofiles.LoginRequest{Email: req.Email, Password: req.Password})
+		c := proto.NewAuthServiceClient(conn)
+		resp, err := c.Login(ctx, &proto.LoginRequest{Email: req.Email, Password: req.Password})
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
 		}
@@ -82,14 +82,14 @@ func reauthenticate(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.GetJsonFromPostRequest(r, &req)
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := protofiles.NewAuthServiceClient(conn)
-		resp, err := c.Login(ctx, &protofiles.LoginRequest{Email: req.Email, Password: req.Password})
+		c := proto.NewAuthServiceClient(conn)
+		resp, err := c.Login(ctx, &proto.LoginRequest{Email: req.Email, Password: req.Password})
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
 		}
@@ -111,14 +111,14 @@ func checkRegistration(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.GetJsonFromPostRequest(r, &req)
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := protofiles.NewAuthServiceClient(conn)
-		resp, err := c.IsEmailRegistered(ctx, &protofiles.IsEmailRegisteredRequest{Email: req.Email})
+		c := proto.NewAuthServiceClient(conn)
+		resp, err := c.IsEmailRegistered(ctx, &proto.IsEmailRegisteredRequest{Email: req.Email})
 		if err != nil {
 			return nil, errors.New(err.Error())
 		}
