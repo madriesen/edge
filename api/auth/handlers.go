@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/acubed-tm/edge/helpers"
@@ -30,13 +31,14 @@ func handler(w http.ResponseWriter, r *http.Request, action string) {
 func runGrpcHelper(action string, success interface{}, err error, req helpers.AuthRequest) (interface{}, error) {
 	switch action {
 	case "register":
-		success, err = helpers.RunGrpc(service, helpers.GrpcRegister(req))
+		return helpers.RunGrpc(service, helpers.GrpcRegister(req))
 	case "authenticate":
-		success, err = helpers.RunGrpc(service, helpers.GrpcLogin(req))
+		return helpers.RunGrpc(service, helpers.GrpcLogin(req))
 	case "checkRegister":
-		success, err = helpers.RunGrpc(service, helpers.GrpcCheckEmailRegistered(req))
+		return helpers.RunGrpc(service, helpers.GrpcCheckEmailRegistered(req))
+	default:
+		return nil, errors.New("no action found")
 	}
-	return success, err
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
@@ -54,4 +56,3 @@ func reauthenticate(w http.ResponseWriter, r *http.Request) {
 func checkRegistration(w http.ResponseWriter, r *http.Request) {
 	handler(w, r, "checkRegister")
 }
-
