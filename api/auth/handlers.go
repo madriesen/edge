@@ -73,36 +73,6 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteSuccessJson(w, r, token)
 }
 
-func reauthenticate(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-
-	err := helpers.GetJsonFromPostRequest(r, &req)
-	if err != nil {
-		helpers.WriteErrorJson(w, r, err)
-		return
-	}
-
-	token, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
-		// Contact the server and print out its response.
-		c := proto.NewAuthServiceClient(conn)
-		resp, err := c.Login(ctx, &proto.LoginRequest{Email: req.Email, Password: req.Password})
-		if err != nil {
-			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
-		}
-		return resp.Token, nil
-	})
-
-	if err != nil {
-		helpers.WriteErrorJson(w, r, err)
-		return
-	}
-
-	helpers.WriteSuccessJson(w, r, token)
-}
-
 func checkRegistration(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Email string `json:"email"`
