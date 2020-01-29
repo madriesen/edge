@@ -4,16 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
-
+	"github.com/acubed-tm/edge/protofiles"
 	"github.com/acubed-tm/edge/helpers"
-
 	"google.golang.org/grpc"
-
-	pb "github.com/acubed-tm/edge/protofiles"
+	"net/http"
 )
 
 const service = "authenticationms.acubed:50551"
+
 
 func register(w http.ResponseWriter, r *http.Request) {
 	var req struct {
@@ -21,7 +19,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password"`
 		Token    string `json:"token"`
 	}
-
+	
 	err := helpers.GetJsonFromPostRequest(r, &req)
 	if err != nil {
 		helpers.WriteErrorJson(w, err)
@@ -30,8 +28,8 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := pb.NewAuthServiceClient(conn)
-		resp, err := c.Register(ctx, &pb.RegisterRequest{Email: req.Email, Password: req.Password, VerificationToken: req.Token})
+		c := protofiles.NewAuthServiceClient(conn)
+		resp, err := c.Register(ctx, &protofiles.RegisterRequest{Email: req.Email, Password: req.Password, VerificationToken: req.Token})
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
 		}
@@ -39,11 +37,11 @@ func register(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
-	helpers.WriteSuccessJson(w, success)
+	helpers.WriteSuccessJson(w, r, success)
 }
 
 func authenticate(w http.ResponseWriter, r *http.Request) {
@@ -54,14 +52,14 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 
 	err := helpers.GetJsonFromPostRequest(r, &req)
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := pb.NewAuthServiceClient(conn)
-		resp, err := c.Login(ctx, &pb.LoginRequest{Email: req.Email, Password: req.Password})
+		c := protofiles.NewAuthServiceClient(conn)
+		resp, err := c.Login(ctx, &protofiles.LoginRequest{Email: req.Email, Password: req.Password})
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
 		}
@@ -69,11 +67,11 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
-	helpers.WriteSuccessJson(w, success)
+	helpers.WriteSuccessJson(w, r, success)
 }
 
 func reauthenticate(w http.ResponseWriter, r *http.Request) {
@@ -90,8 +88,8 @@ func reauthenticate(w http.ResponseWriter, r *http.Request) {
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := pb.NewAuthServiceClient(conn)
-		resp, err := c.Login(ctx, &pb.LoginRequest{Email: req.Email, Password: req.Password})
+		c := protofiles.NewAuthServiceClient(conn)
+		resp, err := c.Login(ctx, &protofiles.LoginRequest{Email: req.Email, Password: req.Password})
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not log in: %v", err))
 		}
@@ -99,11 +97,11 @@ func reauthenticate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
-	helpers.WriteSuccessJson(w, success)
+	helpers.WriteSuccessJson(w, r, success)
 }
 
 func checkRegistration(w http.ResponseWriter, r *http.Request) {
@@ -119,8 +117,8 @@ func checkRegistration(w http.ResponseWriter, r *http.Request) {
 
 	success, err := helpers.RunGrpc(service, func(ctx context.Context, conn *grpc.ClientConn) (interface{}, error) {
 		// Contact the server and print out its response.
-		c := pb.NewAuthServiceClient(conn)
-		resp, err := c.IsEmailRegistered(ctx, &pb.IsEmailRegisteredRequest{Email: req.Email})
+		c := protofiles.NewAuthServiceClient(conn)
+		resp, err := c.IsEmailRegistered(ctx, &protofiles.IsEmailRegisteredRequest{Email: req.Email})
 		if err != nil {
 			return nil, errors.New(err.Error())
 		}
@@ -128,9 +126,9 @@ func checkRegistration(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		helpers.WriteErrorJson(w, err)
+		helpers.WriteErrorJson(w, r, err)
 		return
 	}
 
-	helpers.WriteSuccessJson(w, success)
+	helpers.WriteSuccessJson(w, r, success)
 }
