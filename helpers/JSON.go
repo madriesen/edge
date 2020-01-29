@@ -38,7 +38,7 @@ func WriteSuccessJson(w http.ResponseWriter, v interface{}) {
 	_, _ = io.WriteString(w, string(jsonBytes))
 }
 
-func WriteErrorJson(w http.ResponseWriter, e error) {
+func writeErrorJson(w http.ResponseWriter, e error) {
 	log.Printf("Returning error: %v", e.Error())
 	var resp struct {
 		Message string `json:"error"`
@@ -63,4 +63,12 @@ func RunGrpc(ip string, f func(context.Context, *grpc.ClientConn) (interface{}, 
 	_ = conn.Close()
 
 	return ret, err
+}
+
+func HasError(err error, w http.ResponseWriter) bool {
+	if err != nil {
+		writeErrorJson(w, err)
+		return true
+	}
+	return false
 }
