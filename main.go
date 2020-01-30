@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/acubed-tm/edge/api/auth"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
+	"github.com/joho/godotenv"
 )
 
 func ShowAPIInfo(w http.ResponseWriter, r *http.Request) {
@@ -59,5 +59,7 @@ func main() {
 		port = p
 	}
 
-	log.Fatal(http.ListenAndServe(":" + port, router))
+	log.Printf("Running on port: %s\n", port)
+
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
