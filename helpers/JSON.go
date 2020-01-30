@@ -16,7 +16,7 @@ import (
 
 func GetJsonFromPostRequest(r *http.Request, v interface{}) error {
 	if r.Method != "POST" {
-		return errors.New(fmt.Sprintf("Expected a POST request, received %s.", r.Method))
+		return errors.New(fmt.Sprintf("expected a POST request, received %s", r.Method))
 	}
 
 	bodyBytes, _ := ioutil.ReadAll(r.Body)
